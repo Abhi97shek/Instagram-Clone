@@ -9,7 +9,13 @@ import {
    
 }  from "@heroicons/react/outline";
 import {HomeIcon} from  "@heroicons/react/solid"
+import Modal from './Modal';
+import { useRecoilState } from 'recoil';
+import {modalState} from '../atoms/modalAtom';
+
 function Header() {
+
+    const [open,setOpen] = useRecoilState(modalState);
     return (
         <div className="shadow-sm border-b bg-white sticky top-0 z-50">
                 <div className="flex justify-between items-center  max-w-6xl mx-5 xl:mx-auto align-center">
@@ -36,7 +42,7 @@ function Header() {
                   
 
                     {/* Icons on the Right Side */}
-                    <div className="flex items-center justify-end space-x-4">
+                  <div className="flex items-center justify-end space-x-4">
                          <HomeIcon className="navBtn"/>
                          <MenuIcon className="h-6 w-6 md:hidden cursor-pointer  "/>
                         
@@ -46,14 +52,17 @@ function Header() {
                         </div>
                         
                          
-                         <PlusCircleIcon className="navBtn" />
+                         <PlusCircleIcon onClick={()=>setOpen(true)} className="navBtn" />
                          <UserGroupIcon className="navBtn" />
                          <HeartIcon className="navBtn" />
                          <img src="https://lh3.googleusercontent.com/a-/AOh14GjTwGo_KZBZ-zO9k4mkXjqeH8gxocmK9HO78BUYDQ=s288-p-rw-no" alt="Profile-Image" className="h-10 w-10 rounded-full cursor-pointer"></img>
                     </div>
-                    
 
+                    
+                    
                 </div>
+
+                <Modal />
         </div>
     )
 }
