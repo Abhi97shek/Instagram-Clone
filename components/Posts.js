@@ -32,11 +32,12 @@ function Posts() {
              unsubscribe;
          }
     },[db]);
+
     return (
         <div>
            {posts.map(post=> (
 
-                <Post key={post.id} username={post.data().username} userImg={post.userImg} img={post.data().image} caption={post.data().caption} />
+                <Post key={post.id} id={post.id} username={post.data().username} userImg={post.userImg} img={post.data().image} caption={post.data().caption} />
            ))}
                 
             

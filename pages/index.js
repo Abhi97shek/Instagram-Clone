@@ -6,7 +6,7 @@ export default function Home() {
     <div className=" bg-grey-50 h-screen overflow-y-scroll scrollbar-hide">
       <Head>
         <title>Instagram</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="https://www.instagram.com/static/images/ico/favicon.ico/36b3ee2d91ed.ico" />
       </Head>
 
           <Header />
