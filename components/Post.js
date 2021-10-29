@@ -1,24 +1,35 @@
-import { addDoc, collection, doc, onSnapshot,orderBy, query, serverTimestamp, setDoc } from "@firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, onSnapshot,orderBy, query, serverTimestamp, setDoc } from "@firebase/firestore";
 import {
     BookmarkIcon,
     ChatIcon,
     DotsHorizontalIcon,
     EmojiHappyIcon,
-    HeartIcon,PaperAirplaneIcon
+    HeartIcon,PaperAirplaneIcon,
+    HeartIconFilled
 } from "@heroicons/react/outline";
     import { comment } from "postcss";
     import { useEffect, useState } from "react";
     import { db } from "../firebase";
     import Moment from "react-moment";
     import { async } from "@firebase/util";
-import { useSession } from "next-auth/react";
+    import { useSession } from "next-auth/react";
     function Post({id,username,userImg,img,caption}) {
 
 
     const {data:session} = useSession();
     const [comment,setComment] = useState("");
     const [comments,setComments] = useState([]);
-   
+    const [like,setlikes] = useState([]);
+        const [hasLiked,setHasLiked] = useState(false);
+
+
+    useEffect(()=>{
+
+        return onSnapshot(collection(db,'posts',id,'likes'),(snapshot=>{
+                setlikes(snapshot.docs);
+            }))
+    },[db,id]);
+
     useEffect(()=>{
 
         return onSnapshot(query(collection(db,'posts',id,'comments'),orderBy('timestamp','desc')),snapshot=>{
@@ -26,6 +37,23 @@ import { useSession } from "next-auth/react";
         })
 
     },[db]);
+
+    useEffect(()=>{
+
+        setHasLiked(like.findIndex((likes)=>(likes.id === session?.user.uid)) !== -1)
+
+    },[like]);
+   
+    const likePost = async ()=>{
+
+        if(hasLiked){
+
+            await deleteDoc(doc(db,'posts',id,'likes',session.user.uid));
+        }
+        await setDoc(doc(db,'posts',id,'likes',session.user.uid),{
+                username:session.user.username
+        })
+    };
 
 
     const sendComments = async (e)=>{
@@ -57,7 +85,8 @@ import { useSession } from "next-auth/react";
 
            <div className="flex justify-between px-4 pt-4">
            <div className="flex space-x-4">
-               <HeartIcon className="btn"/>
+              
+               <HeartIcon onClick={likePost} className="btn"/>
                 <ChatIcon className="btn" />
                <PaperAirplaneIcon className="btn" /> 
                
@@ -80,7 +109,7 @@ import { useSession } from "next-auth/react";
                 <div className="ml-10 h-20 overflow-y-scroll scrollbar-thumb-black scrollbar-thin">
                         {comments.map(comment => (
 
-                            <div key={comment.id} className="flex items-center">
+                            <div key={comment.id} className="flex items-center mb-2">
                                 <img className="h-7 rounded-full mr-2" src={session.user.image}  alt="profile-iamge" /> 
                                 <p className="text-sm flex-1 "><span className="font-bold mr-2">{comment.data().username}</span>{comment.data().comment}</p>
                                 <Moment fromNow className="pr-5 text-xs">

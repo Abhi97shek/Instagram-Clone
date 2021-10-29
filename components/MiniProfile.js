@@ -4,7 +4,7 @@ import React from 'react'
 function MiniProfile() {
 
     const {data :session } = useSession();
-    console.log(session);
+   
     return ( 
         <div className="flex items-center justify-between mt-14 ml-10">
             <img src={session?.user?.image} alt="Profile-Image" className="rounded-full border p-2 w-16 h-16"></img>
